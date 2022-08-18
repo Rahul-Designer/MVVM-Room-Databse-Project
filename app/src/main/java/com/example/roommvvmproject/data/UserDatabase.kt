@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [User::class], version = 1)
 abstract class UserDatabase : RoomDatabase() {
-
     abstract fun userDao() : UserDao
 
     companion object{
@@ -19,7 +18,7 @@ abstract class UserDatabase : RoomDatabase() {
                 synchronized(this) {
                     Room.databaseBuilder(
                         context.applicationContext,UserDatabase::class.java,"User_Database")
-                        .build().also { INSTANCE = it }
+                        .build()
                 }
             }
             return INSTANCE!!

@@ -7,10 +7,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roommvvmproject.R
 import com.example.roommvvmproject.data.User
-import kotlinx.android.synthetic.main.recyclerview_row.view.*
+import kotlinx.android.synthetic.main.recyclerview_row.view.name
+import kotlinx.android.synthetic.main.recyclerview_row.view.number
 
-class UserAdapter(private val context: Context, private val arrUser: ArrayList<User>) :
+class UserAdapter(private val context: Context) :
     RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+    var arrUser = ArrayList<User>()
+    fun setListData(data : ArrayList<User>){
+        this.arrUser = data
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(info: User) {
             itemView.name.text = info.name
