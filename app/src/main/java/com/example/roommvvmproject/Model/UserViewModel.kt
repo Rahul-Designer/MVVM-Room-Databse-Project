@@ -18,4 +18,9 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
             userRepository.insertUser(user)
         }
     }
+    fun deleteUser(user: User) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.deleteUser(user)
+        }
+    }
 }

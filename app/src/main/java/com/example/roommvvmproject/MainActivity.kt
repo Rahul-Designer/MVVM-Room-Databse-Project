@@ -1,9 +1,9 @@
 package com.example.roommvvmproject
 
-import android.app.Dialog
+import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,14 +15,15 @@ import com.example.roommvvmproject.data.UserDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_dialog_box.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),UserAdapter.OnClickItem {
     lateinit var userViewModel: UserViewModel
     lateinit var adapter: UserAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        user_recyclerview.layoutManager = LinearLayoutManager(this@MainActivity)
-        adapter = UserAdapter(this)
+
+        user_recyclerview.layoutManager = LinearLayoutManager(this)
+        adapter = UserAdapter(this,this)
         user_recyclerview.adapter = adapter
 
         val dao = UserDatabase.getDatabase(applicationContext).userDao()
@@ -30,23 +31,27 @@ class MainActivity : AppCompatActivity() {
         userViewModel =
             ViewModelProvider(this, UserViewModelFactory(repository)).get(UserViewModel::class.java)
 
-//        userViewModel.getUser().observe(this, Observer {
-//            adapter.setListData(ArrayList(it))
-//            adapter.notifyDataSetChanged()
-//        })
-        add.setOnClickListener {
-            val builder = Dialog(this)
-            builder.setCancelable(true)
-            builder.setTitle("Add")
-            builder.setContentView(R.layout.add_dialog_box)
-            builder.show()
-            val name = builder.userName.text.toString()
-            val number = builder.userNumber.text.toString()
-            builder.addUser.setOnClickListener{
-                Log.d("MAIN",name.toString())
-                builder.dismiss()
+        userViewModel.getUser().observe(this, Observer {
+            adapter.updateUserList(it)
+        })
+
+
+        add.setOnClickListener{
+            val mDialogView = LayoutInflater.from(this).inflate(R.layout.add_dialog_box,null)
+            val builder = AlertDialog.Builder(this)
+                .setView(mDialogView)
+            val mAlterDialog = builder.show()
+            mAlterDialog.addUser.setOnClickListener{
+                mAlterDialog.dismiss()
+                val inputName = mAlterDialog.userName.text.toString()
+                val inputNumber = mAlterDialog.userNumber.text.toString()
+                userViewModel.insertUser(User(null,inputName,inputNumber))
             }
         }
-
-        }
     }
+
+    override fun deleteRow(position: Int) {
+//        userViewModel.deleteUser()
+//        adapter.notifyItemChanged(position)
+    }
+}
