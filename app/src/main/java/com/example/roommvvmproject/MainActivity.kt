@@ -14,6 +14,7 @@ import com.example.roommvvmproject.data.User
 import com.example.roommvvmproject.data.UserDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_dialog_box.*
+import java.text.FieldPosition
 
 class MainActivity : AppCompatActivity(),UserAdapter.OnClickItem {
     lateinit var userViewModel: UserViewModel
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity(),UserAdapter.OnClickItem {
 
         userViewModel.getUser().observe(this, Observer {
             adapter.updateUserList(it)
+
         })
 
 
@@ -50,8 +52,8 @@ class MainActivity : AppCompatActivity(),UserAdapter.OnClickItem {
         }
     }
 
-    override fun deleteRow(position: Int) {
-//        userViewModel.deleteUser()
-//        adapter.notifyItemChanged(position)
+    override fun deleteRow(user: User,position: Int) {
+        userViewModel.deleteUser(user)
+        adapter.notifyItemChanged(position)
     }
 }

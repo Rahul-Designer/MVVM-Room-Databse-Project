@@ -13,17 +13,11 @@ import kotlinx.android.synthetic.main.recyclerview_row.view.*
 
 class UserAdapter(private val context: Context,private val onClickItem: OnClickItem) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
-    private val arrUser = ArrayList<User>()
+    var arrUser = ArrayList<User>()
     class ViewHolder(itemView: View,onClickItem: OnClickItem) : RecyclerView.ViewHolder(itemView) {
-        init {
-            itemView.delete.setOnClickListener {
-                onClickItem.deleteRow(adapterPosition)
-            }
-        }
         fun bind(info: User) {
             itemView.name.text = info.name
             itemView.number.text = info.number
-
         }
     }
 
@@ -36,6 +30,9 @@ class UserAdapter(private val context: Context,private val onClickItem: OnClickI
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pos = arrUser[position]
         holder.bind(pos)
+        holder.itemView.delete.setOnClickListener {
+            onClickItem.deleteRow(arrUser.get(position),position)
+        }
 
     }
 
@@ -43,15 +40,13 @@ class UserAdapter(private val context: Context,private val onClickItem: OnClickI
         return arrUser.size
     }
 
-    fun updateUserList(it: List<User>?) {
+    fun updateUserList(user: List<User>) {
         arrUser.clear()
-        if (it != null) {
-            arrUser.addAll(it)
-        }
+        arrUser.addAll(user)
         notifyDataSetChanged()
     }
     interface OnClickItem{
-        fun deleteRow(position: Int)
+        fun deleteRow(user: User,position: Int)
     }
 }
 
